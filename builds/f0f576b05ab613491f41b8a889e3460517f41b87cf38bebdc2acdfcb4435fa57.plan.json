@@ -1,0 +1,1 @@
+{"filename": "builds/f0f576b05ab613491f41b8a889e3460517f41b87cf38bebdc2acdfcb4435fa57.zip", "runtime": "nodejs16.x", "artifacts_dir": "builds", "build_plan": [["zip", "modules/lambda/src/delete_item_authors", null]]}
