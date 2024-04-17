@@ -10,7 +10,20 @@ module "label" {
 }
 
 resource "aws_dynamodb_table" "this" {
-  name           = module.label.id
+  name           = "authors"
+  read_capacity  = 20
+  write_capacity = 20
+  hash_key       = "id"
+
+  attribute {
+    name = "id"
+    type = "S"
+  }
+
+}
+
+resource "aws_dynamodb_table" "courses" {
+  name           = "courses"
   read_capacity  = 20
   write_capacity = 20
   hash_key       = "id"

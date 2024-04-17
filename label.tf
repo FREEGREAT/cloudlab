@@ -23,3 +23,17 @@ module "label_s3" {
   }
 
 }
+
+module "label_api" {
+  source   = "cloudposse/label/null"
+  version = "0.25.0"
+
+  context = module.label.context
+
+  name       = "gateway_trf"
+
+  tags = {
+    Name = local.tag_name
+  }
+
+}
