@@ -16,14 +16,14 @@ resource "aws_api_gateway_resource" "courses" {
 
 resource "aws_api_gateway_method" "courses_option" {
    rest_api_id = aws_api_gateway_rest_api.this.id
-  resource_id = aws_api_gateway_resource. courses. id
+  resource_id = aws_api_gateway_resource.courses.id
   http_method = "OPTIONS"
   authorization = "NONE"
 }
 
 resource "aws_api_gateway_method" "courses_post" {
-   rest_api_id = aws_api_gateway_rest_api. this.id
-   resource_id = aws_api_gateway_resource. courses.id
+   rest_api_id = aws_api_gateway_rest_api.this.id
+   resource_id = aws_api_gateway_resource.courses.id
   http_method = "POST"
   authorization = "NONE"
   request_validator_id = aws_api_gateway_request_validator.this.id
