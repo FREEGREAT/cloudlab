@@ -178,7 +178,7 @@ module "lambda_function_courses" {
   handler       = "index.handler"
   runtime       = "nodejs16.x"
   create_role = false
-  lambda_role = "arn:aws:iam::730335325958:role/get-all-authors-lambda-role"
+  lambda_role = "arn:aws:iam::730335325958:role/get-all-courses-role"
 
   source_path = "${path.module}/src/get_all_courses"
 
@@ -217,7 +217,7 @@ module "lambda_function_create_courses" {
   handler       = "index.handler"
   runtime       = "nodejs16.x"
   create_role = false
-  lambda_role = "arn:aws:iam::730335325958:role/put-item-authors-lambda-role"
+  lambda_role = "arn:aws:iam::730335325958:role/put-item-courses-role"
 
   source_path = "${path.module}/src/create_item_courses"
 

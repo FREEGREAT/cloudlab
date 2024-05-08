@@ -19,7 +19,7 @@ module "table_author"{
 module "lambdas"{
     source = "./modules/lambda"
     context = module.label.context
-    table_authors_name = module.table_author.id
+    table_authors_name = "authors"
     table_courses_name = "courses"
 }
 
