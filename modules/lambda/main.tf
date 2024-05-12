@@ -198,7 +198,7 @@ module "lambda_function_delete_courses" {
   handler       = "index.handler"
   runtime       = "nodejs16.x"
   create_role = false
-  lambda_role = "arn:aws:iam::730335325958:role/delete-item-authors-lambda-role"
+  lambda_role = "arn:aws:iam::730335325958:role/delete-item-courses-lambda-role"
 
   source_path = "${path.module}/src/delete_item_courses"
 
@@ -236,7 +236,7 @@ module "lambda_function_update_courses" {
   handler       = "index.handler"
   runtime       = "nodejs16.x"
   create_role = false
-  lambda_role = "arn:aws:iam::730335325958:role/update-item-authors-lambda-role"
+  lambda_role = "arn:aws:iam::730335325958:role/update-item-courses-lambda-role"
   
   source_path = "${path.module}/src/update_item_courses"
 
@@ -255,7 +255,7 @@ module "lambda_function_get_courses" {
   handler       = "index.handler"
   runtime       = "nodejs16.x"
   create_role = false
-  lambda_role = "arn:aws:iam::730335325958:role/get-item-authors-lambda-role"
+  lambda_role = "arn:aws:iam::730335325958:role/get-item-courses-lambda-role"
 
   source_path = "${path.module}/src/get_item_courses"
 

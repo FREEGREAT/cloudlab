@@ -30,7 +30,7 @@ module "label_api" {
 
   context = module.label.context
 
-  name       = "gateway_trf"
+  name       = "gatewaay_trf"
 
   tags = {
     Name = local.tag_name

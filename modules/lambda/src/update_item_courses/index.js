@@ -4,8 +4,7 @@ const dynamoDB = new AWS.DynamoDB.DocumentClient();
 exports.handler = async (event, context) => {
   const updateData = {
     id: event.id, 
-    firstName: event.firstName,
-    lastName: event.lastName
+    name: event.name
   };
 
   const params = {
@@ -13,10 +12,9 @@ exports.handler = async (event, context) => {
     Key: {
       id: updateData.id
     },
-    UpdateExpression: "set firstName = :f, lastName = :l",
+    UpdateExpression: "set name = :n",
     ExpressionAttributeValues: {
-      ":f": updateData.firstName,
-      ":l": updateData.lastName
+      ":n": updateData.name
     },
     ReturnValues: "ALL_NEW"
   };

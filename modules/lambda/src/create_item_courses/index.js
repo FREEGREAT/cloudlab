@@ -4,8 +4,10 @@ const dynamoDB = new AWS.DynamoDB.DocumentClient();
 exports.handler = async (event, context) => {
   const dataToAdd = {
     id: event.id, 
-    firstName: event.firstName,
-    lastName: event.lastName
+    title: event.title,
+    authorID: event.authorID,
+    length: event.length,
+    Category: event.Category
   };
 
   const params = {
