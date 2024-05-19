@@ -1,52 +1,59 @@
 module "label" {
-  source = "cloudposse/label/null"
+  source  = "cloudposse/label/null"
   version = "0.25.0"
   context = var.context
 }
-/* AUTHOR */
-module "label_get_all_authours" {
-  source   = "cloudposse/label/null"
+
+module "label_get_all_authors" {
+  source  = "cloudposse/label/null"
   version = "0.25.0"
   context = module.label.context
-  name = "get-all-authoors"
+  name    = "get-all-authors"
 }
-module "label_delete_item" {
-  source   = "cloudposse/label/null"
+module "label_get_all_courses" {
+  source  = "cloudposse/label/null"
   version = "0.25.0"
   context = module.label.context
-  name = "delete-item-author"
+  name    = "get-all-courses"
 }
-module "label_create_item" {
-  source   = "cloudposse/label/null"
+module "label_get_course" {
+  source  = "cloudposse/label/null"
   version = "0.25.0"
   context = module.label.context
-  name = "create-item-author"
+  name    = "get-course"
 }
-module "label_update_item" {
-  source   = "cloudposse/label/null"
+module "label_save_course" {
+  source  = "cloudposse/label/null"
   version = "0.25.0"
   context = module.label.context
-  name = "update-item-author"
+  name    = "save-course"
 }
-module "label_get_item" {
-  source   = "cloudposse/label/null"
+module "label_update_course" {
+  source  = "cloudposse/label/null"
   version = "0.25.0"
   context = module.label.context
-  name = "get-item-author"
+  name    = "update-course"
+}
+module "label_delete_course" {
+  source  = "cloudposse/label/null"
+  version = "0.25.0"
+  context = module.label.context
+  name    = "delete-course"
 }
 
 
 
-module "lambda_function" {
-  source = "terraform-aws-modules/lambda/aws"
-  version = "7.2.3"
-
-  function_name = module.label_get_all_authours.id
-  description   = "My awesome lambda function"
+module "lambda_get_all_authors" {
+  source        = "terraform-aws-modules/lambda/aws"
+  version       = "7.2.3"
+  publish       = true
+  function_name = module.label_get_all_authors.id
+  description   = "Get all authors"
   handler       = "index.handler"
   runtime       = "nodejs16.x"
-  create_role = false
-  lambda_role = "arn:aws:iam::730335325958:role/get-all-authors-lambda-role"
+  create_role   = false
+
+  lambda_role = var.role_get_all_authors_arn
 
   source_path = "${path.module}/src/get_all_authors"
 
@@ -54,215 +61,153 @@ module "lambda_function" {
     TABLE_NAME = var.table_authors_name
   }
 
-  tags = module.label_get_all_authours.tags
-}
-
-module "lambda_function_delete" {
-  source = "terraform-aws-modules/lambda/aws"
-  version = "7.2.3"
-
-  function_name = module.label_delete_item.id
-  description   = "My delete lambda function"
-  handler       = "index.handler"
-  runtime       = "nodejs16.x"
-  create_role = false
-  lambda_role = "arn:aws:iam::730335325958:role/delete-item-authors-lambda-role"
-
-  source_path = "${path.module}/src/delete_item_authors"
-
-  environment_variables = {
-    TABLE_NAME = var.table_authors_name
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${var.aws_api_gateway_rest_api_execution_arn}/*/*/*"
+    }
   }
 
-  tags = module.label_delete_item.tags
+  tags = module.label_get_all_authors.tags
 }
-module "lambda_function_create" {
-  source = "terraform-aws-modules/lambda/aws"
+
+module "lambda_get_all_courses" {
+  source  = "terraform-aws-modules/lambda/aws"
   version = "7.2.3"
-
-  function_name = module.label_create_item.id
-  description   = "My create lambda function"
-  handler       = "index.handler"
-  runtime       = "nodejs16.x"
-  create_role = false
-  lambda_role = "arn:aws:iam::730335325958:role/put-item-authors-lambda-role"
-
-  source_path = "${path.module}/src/create_item_authors"
-
-  environment_variables = {
-    TABLE_NAME = var.table_authors_name
-  }
-
-  tags = module.label_create_item.tags
-}
-module "lambda_function_update" {
-  source = "terraform-aws-modules/lambda/aws"
-  version = "7.2.3"
-
-  function_name = module.label_update_item.id
-  description   = "My update lambda function"
-  handler       = "index.handler"
-  runtime       = "nodejs16.x"
-  create_role = false
-  lambda_role = "arn:aws:iam::730335325958:role/update-item-authors-lambda-role"
-  
-  source_path = "${path.module}/src/update_item_authors"
-
-  environment_variables = {
-    TABLE_NAME = var.table_authors_name
-  }
-  tags = module.label_update_item.tags
-}
-
-module "lambda_function_get" {
-  source = "terraform-aws-modules/lambda/aws"
-  version = "7.2.3"
-
-  function_name = module.label_get_item.id
-  description   = "Get item lambda function"
-  handler       = "index.handler"
-  runtime       = "nodejs16.x"
-  create_role = false
-  lambda_role = "arn:aws:iam::730335325958:role/get-item-authors-lambda-role"
-
-  source_path = "${path.module}/src/get_item_authors"
-
-  environment_variables = {
-    TABLE_NAME = var.table_authors_name
-  }
-
-  tags = module.label_get_item.tags
-}
-
-/*COURSES*/
-
-module "label_get_all_courses" {
-  source   = "cloudposse/label/null"
-  version = "0.25.0"
-  context = module.label.context
-  name = "get-all-courses"
-}
-module "label_delete_item_courses" {
-  source   = "cloudposse/label/null"
-  version = "0.25.0"
-  context = module.label.context
-  name = "delete-item-courses"
-}
-module "label_create_item_courses" {
-  source   = "cloudposse/label/null"
-  version = "0.25.0"
-  context = module.label.context
-  name = "create-item-courses"
-}
-module "label_update_item_courses" {
-  source   = "cloudposse/label/null"
-  version = "0.25.0"
-  context = module.label.context
-  name = "update-item-courses"
-}
-module "label_get_item_courses" {
-  source   = "cloudposse/label/null"
-  version = "0.25.0"
-  context = module.label.context
-  name = "get-item-courses"
-}
-
-
-
-module "lambda_function_courses" {
-  source = "terraform-aws-modules/lambda/aws"
-  version = "7.2.3"
+  publish = true
 
   function_name = module.label_get_all_courses.id
-  description   = "My awesome lambda function"
+  description   = "Getting all courses"
   handler       = "index.handler"
   runtime       = "nodejs16.x"
-  create_role = false
-  lambda_role = "arn:aws:iam::730335325958:role/get-all-courses-role"
+  create_role   = false
+
+  lambda_role = var.role_get_all_courses_arn
 
   source_path = "${path.module}/src/get_all_courses"
 
   environment_variables = {
     TABLE_NAME = var.table_courses_name
   }
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${var.aws_api_gateway_rest_api_execution_arn}/*/*/*"
+    }
+  }
 
   tags = module.label_get_all_courses.tags
 }
 
-module "lambda_function_delete_courses" {
-  source = "terraform-aws-modules/lambda/aws"
+module "lambda_get_course" {
+  source  = "terraform-aws-modules/lambda/aws"
   version = "7.2.3"
+  publish = true
 
-  function_name = module.label_delete_item_courses.id
-  description   = "My delete lambda function"
+  function_name = module.label_get_course.id
+  description   = "Get course"
   handler       = "index.handler"
   runtime       = "nodejs16.x"
-  create_role = false
-  lambda_role = "arn:aws:iam::730335325958:role/delete-item-courses-lambda-role"
+  create_role   = false
 
-  source_path = "${path.module}/src/delete_item_courses"
-
-  environment_variables = {
-    TABLE_NAME = var.table_courses_name
-  }
-
-  tags = module.label_delete_item_courses.tags
-}
-module "lambda_function_create_courses" {
-  source = "terraform-aws-modules/lambda/aws"
-  version = "7.2.3"
-
-  function_name = module.label_create_item_courses.id
-  description   = "My create lambda function"
-  handler       = "index.handler"
-  runtime       = "nodejs16.x"
-  create_role = false
-  lambda_role = "arn:aws:iam::730335325958:role/put-item-courses-role"
-
-  source_path = "${path.module}/src/create_item_courses"
-
-  environment_variables = {
-    TABLE_NAME = var.table_courses_name
-  }
-
-  tags = module.label_create_item_courses.tags
-}
-module "lambda_function_update_courses" {
-  source = "terraform-aws-modules/lambda/aws"
-  version = "7.2.3"
-
-  function_name = module.label_update_item_courses.id
-  description   = "My update lambda function"
-  handler       = "index.handler"
-  runtime       = "nodejs16.x"
-  create_role = false
-  lambda_role = "arn:aws:iam::730335325958:role/update-item-courses-lambda-role"
-  
-  source_path = "${path.module}/src/update_item_courses"
-
-  environment_variables = {
-    TABLE_NAME = var.table_courses_name
-  }
-  tags = module.label_update_item_courses.tags
-}
-
-module "lambda_function_get_courses" {
-  source = "terraform-aws-modules/lambda/aws"
-  version = "7.2.3"
-
-  function_name = module.label_get_item_courses.id
-  description   = "Get item lambda function"
-  handler       = "index.handler"
-  runtime       = "nodejs16.x"
-  create_role = false
-  lambda_role = "arn:aws:iam::730335325958:role/get-item-courses-lambda-role"
+  lambda_role = var.role_get_course_arn
 
   source_path = "${path.module}/src/get_item_courses"
 
   environment_variables = {
     TABLE_NAME = var.table_courses_name
   }
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${var.aws_api_gateway_rest_api_execution_arn}/*/*/*"
+    }
+  }
 
-  tags = module.label_get_item_courses.tags
+  tags = module.label_get_course.tags
+}
+
+module "lambda_save_course" {
+  source  = "terraform-aws-modules/lambda/aws"
+  version = "7.2.3"
+  publish = true
+
+  function_name = module.label_save_course.id
+  description   = "Save course"
+  handler       = "index.handler"
+  runtime       = "nodejs16.x"
+  create_role   = false
+
+  lambda_role = var.role_save_course_arn
+
+  source_path = "${path.module}/src/create_item_courses"
+
+  environment_variables = {
+    TABLE_NAME = var.table_courses_name
+  }
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${var.aws_api_gateway_rest_api_execution_arn}/*/*/*"
+    }
+  }
+
+  tags = module.label_save_course.tags
+}
+
+module "lambda_update_course" {
+  source  = "terraform-aws-modules/lambda/aws"
+  version = "7.2.3"
+  publish = true
+
+  function_name = module.label_update_course.id
+  description   = "Update course"
+  handler       = "index.handler"
+  runtime       = "nodejs16.x"
+  create_role   = false
+
+  lambda_role = var.role_update_course_arn
+
+  source_path = "${path.module}/src/update_item_courses"
+
+  environment_variables = {
+    TABLE_NAME = var.table_courses_name
+  }
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${var.aws_api_gateway_rest_api_execution_arn}/*/*/*"
+    }
+  }
+
+  tags = module.label_update_course.tags
+}
+
+module "lambda_delete_course" {
+  source  = "terraform-aws-modules/lambda/aws"
+  version = "7.2.3"
+  publish = true
+
+  function_name = module.label_delete_course.id
+  description   = "Delete course"
+  handler       = "index.handler"
+  runtime       = "nodejs16.x"
+  create_role   = false
+
+  lambda_role = var.role_delete_course_arn
+
+  source_path = "${path.module}/src/delete_item_courses"
+
+  environment_variables = {
+    TABLE_NAME = var.table_courses_name
+  }
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${var.aws_api_gateway_rest_api_execution_arn}/*/*/*"
+    }
+  }
+
+  tags = module.label_delete_course.tags
 }
 

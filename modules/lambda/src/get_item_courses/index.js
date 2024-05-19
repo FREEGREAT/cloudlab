@@ -1,45 +1,35 @@
 const AWS = require("aws-sdk");
-const dynamoDB = new AWS.DynamoDB.DocumentClient();
+const dynamodb = new AWS.DynamoDB({
+  region: process.env.AWS_REGION,
+  apiVersion: "2012-08-10",
+});
 
-exports.handler = async (event, context) => {
-  const itemId = event.id;
-
+exports.handler = (event, context, callback) => {
   const params = {
-    TableName: process.env.TABLE_NAME,
     Key: {
-      id: itemId
-    }
+      id: {
+        S: event.id,
+      },
+    },
+    TableName: process.env.TABLE_NAME,
   };
+  dynamodb.getItem(params, (err, data) => {
+    if (err) {
+      console.log(err);
+      callback(err);
+    } else {
+      if (!data.Item) {
+        callback(null, { error: "Item not found" });
+        return;
+      }
 
-  try {
-    const data = await dynamoDB.get(params).promise();
-
-    if (!data.Item) {
-      return {
-        statusCode: 404,
-        body: JSON.stringify({ message: 'Item not found' }),
-      };
+      callback(null, {
+        id: data.Item.id.S,
+        title: data.Item.title.S,
+        authorId: data.Item.authorId.S,
+        length: data.Item.length.S,
+        category: data.Item.category.S,
+      });
     }
-
-    const formattedData = {
-      Items: [
-        {
-          id: { S: data.Item.id },
-          firstName: { S: data.Item.firstName },
-          lastName: { S: data.Item.lastName }
-        }
-      ]
-    };
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify(formattedData),
-    };
-  } catch (error) {
-    console.error('Error getting item', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ message: 'Error getting item' }),
-    };
-  }
+  });
 };

@@ -16,7 +16,7 @@ module "label_s3" {
 
   context = module.label.context
 
-  name       = "s3"
+  name       = "s33"
 
   tags = {
     Name = local.tag_name
@@ -30,10 +30,23 @@ module "label_api" {
 
   context = module.label.context
 
-  name       = "gatewaay_trf"
+  name       = "gateway_trf"
 
   tags = {
     Name = local.tag_name
   }
 
+}
+
+module "label_front_app" {
+  source  = "cloudposse/label/null"
+  version = "0.25.0"
+
+  context = module.label.context
+
+  name = "front-app"
+
+  tags = {
+    Name = local.tag_name
+  }
 }

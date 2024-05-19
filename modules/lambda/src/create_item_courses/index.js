@@ -1,31 +1,47 @@
 const AWS = require("aws-sdk");
-const dynamoDB = new AWS.DynamoDB.DocumentClient();
+const dynamodb = new AWS.DynamoDB({
+  region: process.env.AWS_REGION,
+  apiVersion: "2012-08-10",
+});
 
-exports.handler = async (event, context) => {
-  const dataToAdd = {
-    id: event.id, 
-    title: event.title,
-    authorID: event.authorID,
-    length: event.length,
-    Category: event.Category
-  };
+const replaceAll = (str, find, replace) => {
+  return str.replace(new RegExp(find, "g"), replace);
+};
 
+exports.handler = (event, context, callback) => {
+  const id = replaceAll(event.title, " ", "-").toLowerCase();
   const params = {
+    Item: {
+      id: {
+        S: id,
+      },
+      title: {
+        S: event.title,
+      },
+      authorId: {
+        S: event.authorId,
+      },
+      length: {
+        S: event.length,
+      },
+      category: {
+        S: event.category,
+      },
+    },
     TableName: process.env.TABLE_NAME,
-    Item: dataToAdd
   };
-
-  try {
-    await dynamoDB.put(params).promise();
-    return {
-      statusCode: 200,
-      body: JSON.stringify('Item added successfully'),
-    };
-  } catch (error) {
-    console.error('Error adding item', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify('Error adding item'),
-    };
-  }
+  dynamodb.putItem(params, (err, data) => {
+    if (err) {
+      console.log(err);
+      callback(err);
+    } else {
+      callback(null, {
+        id: params.Item.id.S,
+        title: params.Item.title.S,
+        authorId: params.Item.authorId.S,
+        length: params.Item.length.S,
+        category: params.Item.category.S,
+      });
+    }
+  });
 };

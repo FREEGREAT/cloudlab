@@ -1,35 +1,42 @@
 const AWS = require("aws-sdk");
-const dynamoDB = new AWS.DynamoDB.DocumentClient();
+const dynamodb = new AWS.DynamoDB({
+  region: process.env.AWS_REGION,
+  apiVersion: "2012-08-10",
+});
 
-exports.handler = async (event, context) => {
-  const updateData = {
-    id: event.id, 
-    name: event.name
-  };
-
+exports.handler = (event, context, callback) => {
   const params = {
+    Item: {
+      id: {
+        S: event.id,
+      },
+      title: {
+        S: event.title,
+      },
+      authorId: {
+        S: event.authorId,
+      },
+      length: {
+        S: event.length,
+      },
+      category: {
+        S: event.category,
+      },
+    },
     TableName: process.env.TABLE_NAME,
-    Key: {
-      id: updateData.id
-    },
-    UpdateExpression: "set name = :n",
-    ExpressionAttributeValues: {
-      ":n": updateData.name
-    },
-    ReturnValues: "ALL_NEW"
   };
-
-  try {
-    const updatedData = await dynamoDB.update(params).promise();
-    return {
-      statusCode: 200,
-      body: JSON.stringify(updatedData.Attributes),
-    };
-  } catch (error) {
-    console.error('Error updating item', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify('Error updating item'),
-    };
-  }
+  dynamodb.putItem(params, (err, data) => {
+    if (err) {
+      console.log(err);
+      callback(err);
+    } else {
+      callback(null, {
+        id: params.Item.id.S,
+        title: params.Item.title.S,
+        authorId: params.Item.authorId.S,
+        length: params.Item.length.S,
+        category: params.Item.category.S,
+      });
+    }
+  });
 };
