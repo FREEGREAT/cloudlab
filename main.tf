@@ -2,20 +2,17 @@ locals {
   tag_name = var.use_locals ? "forum" : var.bucket_name
 }
 
-
-
-module "table_author"{
-    source = "./modules/dynamodb"
-    context = module.label.context
-    name = "authors"
+module "table_author" {
+  source  = "./modules/dynamodb"
+  context = module.label.context
+  name    = "authors"
 }
+
 module "table_courses" {
   source  = "./modules/dynamodb"
   context = module.label.context
   name    = "courses"
 }
-
-
 
 module "lambda" {
   source                   = "./modules/lambda"
@@ -29,6 +26,12 @@ module "lambda" {
   role_update_course_arn   = module.iam.role_save_course_arn
   role_delete_course_arn   = module.iam.role_delete_course_arn
   aws_api_gateway_rest_api_execution_arn = aws_api_gateway_rest_api.this.execution_arn
+  logging_log_group_get_all_authors      = module.cloudwatch.cloudwatch_log_group_get_all_authors_name
+  logging_log_group_get_all_courses      = module.cloudwatch.cloudwatch_log_group_get_all_courses_name
+  logging_log_group_get_course           = module.cloudwatch.cloudwatch_log_group_get_course_name
+  logging_log_group_save_course          = module.cloudwatch.cloudwatch_log_group_save_course_name
+  logging_log_group_update_course        = module.cloudwatch.cloudwatch_log_group_update_course_name
+  logging_log_group_delete_course        = module.cloudwatch.cloudwatch_log_group_delete_course_name
 }
 
 module "iam" {
@@ -49,3 +52,9 @@ module "cloudwatch" {
   context = module.label.context
 }
 
+# resource "aws_s3_bucket" "example" {
+#   #   bucket = "891377012449-my-tf-test-bucket"
+#   bucket = module.label_s3.id
+
+#   tags = module.label_s3.tags
+# }

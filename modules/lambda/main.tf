@@ -67,7 +67,9 @@ module "lambda_get_all_authors" {
       source_arn = "${var.aws_api_gateway_rest_api_execution_arn}/*/*/*"
     }
   }
-
+  
+  use_existing_cloudwatch_log_group = true
+  logging_log_group                 = var.logging_log_group_get_all_authors
   tags = module.label_get_all_authors.tags
 }
 
@@ -95,7 +97,8 @@ module "lambda_get_all_courses" {
       source_arn = "${var.aws_api_gateway_rest_api_execution_arn}/*/*/*"
     }
   }
-
+  use_existing_cloudwatch_log_group = true
+  logging_log_group                 = var.logging_log_group_get_all_courses
   tags = module.label_get_all_courses.tags
 }
 
@@ -123,6 +126,8 @@ module "lambda_get_course" {
       source_arn = "${var.aws_api_gateway_rest_api_execution_arn}/*/*/*"
     }
   }
+  use_existing_cloudwatch_log_group = true
+  logging_log_group                 = var.logging_log_group_get_course
 
   tags = module.label_get_course.tags
 }
@@ -151,6 +156,8 @@ module "lambda_save_course" {
       source_arn = "${var.aws_api_gateway_rest_api_execution_arn}/*/*/*"
     }
   }
+    use_existing_cloudwatch_log_group = true
+  logging_log_group                 = var.logging_log_group_save_course
 
   tags = module.label_save_course.tags
 }
@@ -179,6 +186,9 @@ module "lambda_update_course" {
       source_arn = "${var.aws_api_gateway_rest_api_execution_arn}/*/*/*"
     }
   }
+   use_existing_cloudwatch_log_group = true
+  logging_log_group                 = var.logging_log_group_update_course
+
 
   tags = module.label_update_course.tags
 }
@@ -207,6 +217,9 @@ module "lambda_delete_course" {
       source_arn = "${var.aws_api_gateway_rest_api_execution_arn}/*/*/*"
     }
   }
+
+   use_existing_cloudwatch_log_group = true
+  logging_log_group                 = var.logging_log_group_delete_course
 
   tags = module.label_delete_course.tags
 }
